@@ -13,9 +13,9 @@ uint8_t ADXL345::enable() {
   twi->write(ADXL345_REG_POWER_CTRL);
   twi->write(ADXL345_MEASURE);
 
-  if (twi->error > 0) {
-    return twi->error;
-  }
+#ifdef ADXL345_TWI_CHECK_ERROR
+  if (twi->error > 0) { return twi->error; }
+#endif
 
   return setRange(range);
 }
@@ -72,7 +72,9 @@ uint8_t ADXL345::update() {
   twi->start(address);
   twi->write(ADXL345_REG_DATA_X_0);
 
+#ifdef ADXL345_TWI_CHECK_ERROR
   if (twi->error > 0) { return twi->error; }
+#endif
 
   valueL = twi->read(true);
   valueH = twi->read(true);

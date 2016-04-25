@@ -5,15 +5,25 @@
 
 
 /**
- * ADXL345 Software Configuration
+ * ADXL345 Pre-Processor Flags
  */
-// #define ADXL345_TWI_STOP
+// #define ADXL345_TWI_STOP               // Send a TWI STOP condition after every operation
+// #define ADXL345_TWI_CHECK_ERROR        // Check TWI errors after every read/write
+
+
+/**
+ * ADXL345 Default I2C Address
+ */
+#define ADXL345_ADDRESS             0xA6
 
 
 /**
  * ADXL345 Register Map
  */
 #define ADXL345_REG_DEVICE_ID       0x00  // Device ID Register
+
+  #define ADXL345_DEVICE_ID           0b11100101
+
 #define ADXL345_REG_THRESH_TAP      0x1D  // Tap Threshold
 #define ADXL345_REG_OFFSET_X        0x1E  // X-axis offset
 #define ADXL345_REG_OFFSET_Y        0x1F  // Y-axis offset
@@ -32,29 +42,33 @@
 #define ADXL345_REG_BW_RATE         0x2C  // Data rate and power mode control
 
 #define ADXL345_REG_POWER_CTRL      0x2D  // Power Control Register
-  #define ADXL345_WAKE_UP_0   (1 << 0)  // Wake Up Mode - Bit 0
-  #define ADXL345_WAKE_UP_1   (1 << 1)  // Wake Up mode - Bit 1
-  #define ADXL345_SLEEP       (1 << 2)  // Sleep Mode
-  #define ADXL345_MEASURE     (1 << 3)  // Measurement Mode
-  #define ADXL345_AUTO_SLEEP  (1 << 4)  // Auto Sleep Mode bit
-  #define ADXL345_LINK        (1 << 5)  // Link bit
+
+  #define ADXL345_WAKE_UP_0           (1 << 0)  // Wake Up Mode - Bit 0
+  #define ADXL345_WAKE_UP_1           (1 << 1)  // Wake Up mode - Bit 1
+  #define ADXL345_SLEEP               (1 << 2)  // Sleep Mode
+  #define ADXL345_MEASURE             (1 << 3)  // Measurement Mode
+  #define ADXL345_AUTO_SLEEP          (1 << 4)  // Auto Sleep Mode bit
+  #define ADXL345_LINK                (1 << 5)  // Link bit
 
 #define ADXL345_REG_INT_ENABLE      0x2E  // Interrupt Enable Control
 #define ADXL345_REG_INT_MAP         0x2F  // Interrupt Mapping Control
 #define ADXL345_REG_INT_SOURCE      0x30  // Source of interrupts
 
 #define ADXL345_REG_DATA_FORMAT     0x31  // Data format control
-  #define ADXL345_RANGE_2G  0
-  #define ADXL345_SCALE_2G  0.0039
-  #define ADXL345_RANGE_4G  (1 << 0)
-  #define ADXL345_SCALE_4G  0.0078
-  #define ADXL345_RANGE_8G  (1 << 1)
-  #define ADXL345_SCALE_8G  0.0156
-  #define ADXL345_RANGE_16G (1 << 1) | 1
-  #define ADXL345_SCALE_16G 0.0312
 
-  #define ADXL345_JUSTIFY   (1 << 2)
-  #define ADXL345_FULL_RES  (1 << 3)
+  #define ADXL345_RANGE_2G            0b00
+  #define ADXL345_RANGE_4G            0b01
+  #define ADXL345_RANGE_8G            0b10
+  #define ADXL345_RANGE_16G           0b11
+
+  #define ADXL345_JUSTIFY             (1 << 2)
+  #define ADXL345_FULL_RES            (1 << 3)
+
+  // milli-g/LSB
+  #define ADXL345_SCALE_2G            0.0039F
+  #define ADXL345_SCALE_4G            0.0078F
+  #define ADXL345_SCALE_8G            0.0156F
+  #define ADXL345_SCALE_16G           0.0312F
 
 #define ADXL345_REG_DATA_X_0        0x32  // X-Axis Data 0
 #define ADXL345_REG_DATA_X_1        0x33  // X-Axis Data 1
@@ -83,7 +97,7 @@ class ADXL345 {
     float z;
 
 
-    ADXL345(TWI * twi_, uint8_t address_ = 0xA6); // A tribute to my beloved colleague Dr. Dangle
+    ADXL345(TWI * twi, uint8_t address = ADXL345_ADDRESS);
 
 
     /**

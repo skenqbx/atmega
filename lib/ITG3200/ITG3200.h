@@ -3,12 +3,18 @@
 
 #include <TWI.h>
 
-// Fixed usage of 17 Bytes SRAM
 
 /**
- * ITG3200 Software Configuration
+ * ITG3200 Pre-Processor Flags
  */
-// #define ITG3200_TWI_STOP
+// #define ITG3200_TWI_STOP               // Send a TWI STOP condition after every operation
+// #define ITG3200_TWI_CHECK_ERROR        // Check TWI errors after every read/write
+
+
+/**
+ * ITG3200 Default I2C Address
+ */
+#define ITG3200_ADDRESS             0xD0
 
 
 /**
@@ -77,7 +83,7 @@ class ITG3200 {
     float z;
     float t; // temperature in degree celcius
 
-    ITG3200(TWI * twi, uint8_t address = 0xD0);
+    ITG3200(TWI * twi, uint8_t address = ITG3200_ADDRESS);
 
     uint8_t enable();
     uint8_t disable();

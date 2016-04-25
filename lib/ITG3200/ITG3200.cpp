@@ -12,14 +12,20 @@ uint8_t ITG3200::enable() {
   twi->start(address);
   twi->write(ITG3200_REG_DLPF_FS);
   twi->write(ITG3200_DLPF_FS_SEL_0 | ITG3200_DLPF_FS_SEL_1 | ITG3200_DLPF_CFG_0);
+
+#ifdef ITG3200_TWI_CHECK_ERROR
   if (twi->error > 0) { return twi->error; }
+#endif
 
   // Set sample rate divider for 100 Hz operation
   // Fsample = Fint / (divider + 1) where Fint is 1kHz
   twi->restart();
   twi->write(ITG3200_REG_SMPLRT_DIV);
   twi->write(9);
+
+#ifdef ITG3200_TWI_CHECK_ERROR
   if (twi->error > 0) { return twi->error; }
+#endif
 
   // Select X gyro PLL for clock source
   twi->restart();
@@ -76,6 +82,10 @@ uint8_t ITG3200::update() {
 
   twi->start(address);
   twi->write(ITG3200_REG_GYRO_XOUT_H);
+
+#ifdef ITG3200_TWI_CHECK_ERROR
+  if (twi->error > 0) { return twi->error; }
+#endif
 
   valueH = twi->read(true);
   valueL = twi->read(true);

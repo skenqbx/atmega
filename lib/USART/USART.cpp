@@ -20,9 +20,11 @@ USART::USART(
 void USART::enable() {
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     // Set fast mode
-    *_ucsra |= (1 << U2X0);
+    if (baudrate & 0x8000) {
+      *_ucsra |= (1 << U2X0);
+    }
     // Set baud rate
-    *_ubrr = baudrate;
+    *_ubrr = baudrate & 0x0FFF;
     // Set frame format
     *_ucsrc = frame;
     // Enable receiver and transmitter

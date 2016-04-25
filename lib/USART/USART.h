@@ -18,10 +18,15 @@ extern "C" {
 /**
  * Baudrates
  */
-#define USART_BAUDRATE(baud) ((F_CPU / 4 / baud - 1) / 2)
+#define USART_BAUDRATE(baud) ((F_CPU / 8 / baud - 1) / 2)
+#define USART_BAUDRATE_2X(baud) (((F_CPU / 4 / baud - 1) / 2) | 0x8000)
 
-#define USART_BAUDRATE_112K   USART_BAUDRATE(115200L)
-#define USART_BAUDRATE_56K    USART_BAUDRATE(57600L)
+#define USART_BAUDRATE_27K      USART_BAUDRATE(28800L)
+#define USART_BAUDRATE_27K_2X   USART_BAUDRATE_2X(28800L)
+#define USART_BAUDRATE_56K      USART_BAUDRATE(57600L)
+#define USART_BAUDRATE_56K_2X   USART_BAUDRATE_2X(57600L)
+#define USART_BAUDRATE_112K     USART_BAUDRATE(115200L)
+#define USART_BAUDRATE_112K_2X  USART_BAUDRATE_2X(115200L)
 
 
 /**
@@ -83,9 +88,18 @@ class USART {
     ) {
       switch (port) {
         case USART_PORT1:
-          return USART(&UCSR1A, &UCSR1B, &UCSR1C, &UBRR1, &UDR1, baudrate, frame);
+          return USART(
+              &UCSR1A, &UCSR1B, &UCSR1C,
+              &UBRR1, &UDR1,
+              baudrate, frame
+          );
+
         default:
-          return USART(&UCSR0A, &UCSR0B, &UCSR0C, &UBRR0, &UDR0, baudrate, frame);
+          return USART(
+              &UCSR0A, &UCSR0B, &UCSR0C,
+              &UBRR0, &UDR0,
+              baudrate, frame
+          );
       }
     }
 
@@ -101,10 +115,10 @@ class USART {
     uint8_t read();
 
   private:
-    volatile uint16_t * const _ubrr;
     volatile uint8_t * const _ucsra;
     volatile uint8_t * const _ucsrb;
     volatile uint8_t * const _ucsrc;
+    volatile uint16_t * const _ubrr;
     volatile uint8_t * const _udr;
 };
 
